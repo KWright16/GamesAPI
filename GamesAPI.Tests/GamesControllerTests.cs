@@ -18,9 +18,9 @@ namespace GamesAPI.Tests
     {
         [TestMethod]
         public async Task GetGames_returns_all_gamesAsync()
-        {
-            // In-memory database only exists while the connection is open
-            var connection = new SqliteConnection("DataSource=:memory:");
+        {                                      
+        // In-memory database only exists while the connection is open
+        var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
 
             try
@@ -38,21 +38,23 @@ namespace GamesAPI.Tests
                 // Insert seed data into the database using one instance of the context
                 using (var context = new GamesContext(options))
                 {
-                    context.Games.AddRange(
+                    context.Games.Add(
                     new Game
                     {
                         Name = "Rayman Ledgends",
                         Description = "There are several differences and new features in this PS4 version. In this version the textures of the game are more compressed, so you can see that the game’s graphics are clearer and more detailed than before. You will also see that there is no loading time when you enter or exit a level, which makes the navigation even faster and more enjoyable. ",
                         ReleaseDate = DateTime.Parse("2018-2-14"),
                         Rating = 8
-                    },
+                    });
+                    context.Games.Add(
                     new Game
                     {
                         Name = "Monster-Hunter: World",
                         Description = " In Monster Hunter: World you assume the role of a hunter venturing to a new continent where you track down and slay ferocious beasts in heart-pounding battles. ",
                         ReleaseDate = DateTime.Parse("2018-1-26"),
                         Rating = 7
-                    },
+                    });
+                    context.Games.Add(
                     new Game
                     {
                         Name = "Tetris Effect",
@@ -62,17 +64,18 @@ namespace GamesAPI.Tests
                     });
                     context.SaveChanges();
                 }
-
+                
                 // Use a clean instance of the context to run the test
                 using (var context = new GamesContext(options))
                 {
                     var service = new GamesController(context);
                     var result = await service.GetGames();
+                    Console.WriteLine(result);
                     Assert.AreEqual(3, result);
                 }
             }
             finally
-            {
+            {           
                 connection.Close();
             }
         }
