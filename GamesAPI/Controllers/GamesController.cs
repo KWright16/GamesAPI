@@ -76,8 +76,8 @@ namespace GamesAPI.Controllers
 
             _context.Games.Remove(game);
             await _context.SaveChangesAsync();
-
+            
             return game;
-        }
+        }        
     }
 }

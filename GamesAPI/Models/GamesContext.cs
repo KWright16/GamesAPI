@@ -8,6 +8,9 @@ namespace GamesAPI.Models
 {
     public class GamesContext : DbContext
     {
+        public GamesContext()
+        { }
+
         public GamesContext(DbContextOptions<GamesContext> options)
             : base(options)
         {
