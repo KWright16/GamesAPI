@@ -21,21 +21,21 @@ namespace GamesAPI.Tests
         {                                      
         // In-memory database only exists while the connection is open
         var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
+            connection.Open();                                           
+            
             try
             {
                 var options = new DbContextOptionsBuilder<GamesContext>()
                     .UseSqlite(connection)
                     .Options;
-
+                                                                  
                 // Create the schema in the database
                 using (var context = new GamesContext(options))
                 {
-                    context.Database.EnsureCreated();
+                    await context.Database.EnsureCreatedAsync();
                 }
 
-                // Insert seed data into the database using one instance of the context
+                // Insert seed data into the database 
                 using (var context = new GamesContext(options))
                 {
                     context.Games.Add(
@@ -62,16 +62,18 @@ namespace GamesAPI.Tests
                         ReleaseDate = DateTime.Parse("2018-11-09"),
                         Rating = 8
                     });
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
-                
+
+                                
                 // Use a clean instance of the context to run the test
                 using (var context = new GamesContext(options))
                 {
-                    var service = new GamesController(context);
-                    var result = await service.GetGames();
-                    Console.WriteLine(result);
-                    Assert.AreEqual(3, result);
+                    var count = await context.Games.CountAsync();
+                    Assert.AreEqual(3, count);
+                    //var service = new GamesController(context);
+                    //var result = await service.GetGames();
+                    //Assert.AreEqual(3, result.Count());
                 }
             }
             finally
