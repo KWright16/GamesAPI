@@ -25,7 +25,7 @@ namespace GamesAPI.Controllers
             return await _context.Games.ToListAsync();
         }
                 
-        // GET: api/game/{id}
+        // GET: api/games/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(long id)
         {
